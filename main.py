@@ -2,9 +2,9 @@ import time
 import youtube_upload
 import os
 
-class MainClass:
+class YouTubeUploader:
     def __init__(self):
-        self.videos_directory = r'E:\git_public\my_prods\tiktok-downloader-python-selenium\out'
+        self.videos_directory = r'D:\git\tiktok-downloader-python-selenium\videos'
         self.videos = os.listdir(self.videos_directory)
         with open('bl.txt', 'r', encoding='utf-8') as f:
             self.bl = [x.strip() for x in f.read().split('\n') if x]
@@ -18,6 +18,8 @@ class MainClass:
             if counts > 30:
                 return
             if video_name in self.bl:
+                video_path = f'{self.videos_directory}/{video_name}'
+                os.remove(video_path)
                 continue
             video_path = f'{self.videos_directory}/{video_name}'
             if not uploader.upload_video(video_name, video_path):
@@ -30,6 +32,6 @@ class MainClass:
 
 
 if __name__ == '__main__':
-    pr = MainClass()
+    pr = YouTubeUploader()
     pr.run_apload_videos()
     print('Complete')

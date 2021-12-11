@@ -12,12 +12,16 @@ class YoutubeUpload:
 
     def __init__(self):
         chrome_options = Options()
-        user_path = f'{os.getcwd()}/UserData'
+        user_path = r'C:\Users\kate\AppData\Local\Google\Chrome\User Data\YoutubeUploader'
+        user_profile = 'Profile 10'
+
         with open('res/tags.txt', 'r', encoding='utf-8') as f:
             self.videos_tags = [x.strip().replace(' ', '') for x in f.read().split('\n') if x]
         with open('res/videos_counter.txt', 'r', encoding='utf-8') as f:
             self.video_number = int(f.read().strip())
         chrome_options.add_argument(f'user-data-dir={user_path}')
+        chrome_options.add_argument(f'--profile-directory={user_profile}')
+
         # chrome_options.add_argument("--headless")
         self.driver = webdriver.Chrome(chrome_options=chrome_options)
         self.driver.get('https://studio.youtube.com/channel/')
@@ -38,8 +42,14 @@ class YoutubeUpload:
                 # self.driver.get('https://studio.youtube.com/channel/')
                 time.sleep(1)
         else: return False
-        time.sleep(5)
-        file_input_element = self.driver.find_element_by_css_selector('[name="Filedata"]')
+        for sdasdfs in range(10):
+            try:
+                file_input_element = self.driver.find_element_by_css_selector('[name="Filedata"]')
+                break
+            except:
+                time.sleep(1)
+        else:
+            return False
         file_input_element.send_keys(f'{video_path}')
         for x in range(15):
             try:
@@ -49,11 +59,11 @@ class YoutubeUpload:
                 time.sleep(1)
 
         video_name_input = self.driver.find_elements_by_css_selector('[id="textbox"]')[0]
-        video_title =  f'Лучшие ТикТок видео #{self.video_number} | Самые веселые тик ток видео'
+        video_title =  f'Лучшие ТикТок видео #{self.video_number} | Самые веселые TikTok видео #Shorts'
         video_description_input = self.driver.find_elements_by_css_selector('[id="textbox"]')[1]
         for x in range(3):
             try:
-                kids_radio_btn = self.driver.find_element_by_css_selector('[name="NOT_MADE_FOR_KIDS"]')
+                kids_radio_btn = self.driver.find_element_by_css_selector('[name="VIDEO_MADE_FOR_KIDS_NOT_MFK"]')
                 kids_radio_btn.click()
                 break
             except:
@@ -61,11 +71,11 @@ class YoutubeUpload:
         else:
             return False
 
-        also_params = self.driver.find_element_by_css_selector('[class="advanced-button style-scope ytcp-uploads-details"]')
+        also_params = self.driver.find_element_by_css_selector('[id="toggle-button"]')
         also_params.click()
         time.sleep(1)
 
-        video_tags_input = self.driver.find_elements_by_css_selector('[class="text-input style-scope ytcp-chip-bar"]')[-1]
+        video_tags_input = self.driver.find_element_by_css_selector('[placeholder="Добавьте тег"]')
 
         video_name_input.click()
         time.sleep(0.5)
@@ -76,9 +86,9 @@ class YoutubeUpload:
         video_tags = ','.join(self.videos_tags)
         video_tags_input.send_keys(video_tags)
         video_description_input.click()
-        video_description_input.send_keys(f'Мой телеграмм канал с красивыми девушками - https://t.me/only_private \n\n\n\n\n\n #{" #".join(self.videos_tags)}')
+        # video_description_input.send_keys(f'Мой телеграмм канал с красивыми девушками - https://t.me/only_private \n\n\n\n\n\n #{" #".join(self.videos_tags)}')
 
-        video_playlist = self.driver.find_element_by_css_selector('[class="dropdown-trigger-text style-scope ytcp-text-dropdown-trigger"]')
+        video_playlist = self.driver.find_element_by_css_selector('[placeholder="Выберите плейлист"]')
         video_playlist.click()
         time.sleep(0.5)
         self.driver.find_element_by_css_selector('[id="checkbox-label-0"]').click()
@@ -90,7 +100,7 @@ class YoutubeUpload:
         print(video_tags)
         print()
 
-        for x in range(2):
+        for x in range(3):
             next_button = self.driver.find_element_by_css_selector('[id="next-button"]')
             next_button.click()
             time.sleep(2)
@@ -102,8 +112,15 @@ class YoutubeUpload:
 
         for x in range(360):
             try:
-                upload_progress = self.driver.find_elements_by_css_selector('[class="progress-label style-scope ytcp-video-upload-progress"]')[1].text
-                if 'Обработка завершена' in upload_progress:
+                upload_progress = self.driver.find_element_by_css_selector('[id="dialog-title"]').text
+                if 'Обработка видео' in upload_progress:
+                    upload_progress = self.driver.find_elements_by_css_selector(
+                        '[class="progress-label style-scope ytcp-video-upload-progress"]')[-1].text
+            except:
+                upload_progress = self.driver.find_elements_by_css_selector('[class="progress-label style-scope ytcp-video-upload-progress"]')[-1].text
+
+            try:
+                if 'Видео опубликовано' in upload_progress or 'Проверка завершена. Нарушений не найдено' in upload_progress:
                     print('Video uploaded')
                     self.driver.find_elements_by_css_selector('[class="label style-scope ytcp-button"]')[-1].click()
                     self.video_number += 1
@@ -114,6 +131,7 @@ class YoutubeUpload:
                     time.sleep(1)
             except:
                 time.sleep(1)
+
         else:
             try:
                 done_button = self.driver.find_element_by_css_selector('[id="done-button"]')

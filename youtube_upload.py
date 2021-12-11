@@ -59,7 +59,7 @@ class YoutubeUpload:
                 time.sleep(1)
 
         video_name_input = self.driver.find_elements_by_css_selector('[id="textbox"]')[0]
-        video_title =  f'Лучшие ТикТок видео #{self.video_number} | Самые веселые TikTok видео #Shorts'
+        video_title =  f'Лучшие ТикТок видео #{self.video_number} | Самые веселые TikTok видео 2021 #Shorts'
         video_description_input = self.driver.find_elements_by_css_selector('[id="textbox"]')[1]
         for x in range(3):
             try:
@@ -108,11 +108,13 @@ class YoutubeUpload:
         public_radio_btn.click()
         done_button = self.driver.find_element_by_css_selector('[id="done-button"]')
         done_button.click()
-        os.remove(video_path)
+
+        with open('bl.txt', 'a', encoding='utf-8') as f:
+            f.write(f'{video_title}\n')
 
         for x in range(360):
             try:
-                upload_progress = self.driver.find_element_by_css_selector('[id="dialog-title"]').text
+                upload_progress = self.driver.find_elements_by_css_selector('[id="dialog-title"]')[-1].text
                 if 'Обработка видео' in upload_progress:
                     upload_progress = self.driver.find_elements_by_css_selector(
                         '[class="progress-label style-scope ytcp-video-upload-progress"]')[-1].text
@@ -120,7 +122,7 @@ class YoutubeUpload:
                 upload_progress = self.driver.find_elements_by_css_selector('[class="progress-label style-scope ytcp-video-upload-progress"]')[-1].text
 
             try:
-                if 'Видео опубликовано' in upload_progress or 'Проверка завершена. Нарушений не найдено' in upload_progress:
+                if 'Видео опубликовано' in upload_progress or 'Проверка завершена' in upload_progress:
                     print('Video uploaded')
                     self.driver.find_elements_by_css_selector('[class="label style-scope ytcp-button"]')[-1].click()
                     self.video_number += 1

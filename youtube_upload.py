@@ -110,7 +110,7 @@ class YoutubeUpload:
         done_button.click()
 
         with open('bl.txt', 'a', encoding='utf-8') as f:
-            f.write(f'{video_title}\n')
+            f.write(f'{video_data}\n')
 
         for x in range(360):
             try:

@@ -7,6 +7,9 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 
+from scripts.file_manager import FileManager
+from scripts.deemojify import deEmojify
+
 
 class YoutubeUpload:
 
@@ -27,9 +30,17 @@ class YoutubeUpload:
         self.driver.get('https://studio.youtube.com/channel/')
 
     def upload_video(self, video_data, video_path):
-        video_title =  video_data
+        video_title = video_data
         if not video_title:
             return False
+
+        videos_data_path = video_path.replace(video_data, '').replace('/videos/', '')
+        video_description = FileManager(folder_path=videos_data_path).get_description_by_videoname(video_data)
+
+        if not video_description:
+            return False
+
+        video_description = deEmojify(video_description)
 
         # self.driver.get('https://studio.youtube.com/channel/')
         time.sleep(2)
@@ -86,8 +97,12 @@ class YoutubeUpload:
         video_tags = ','.join(self.videos_tags)
         video_tags_input.send_keys(video_tags)
         video_description_input.click()
-        # video_description_input.send_keys(f'Мой телеграмм канал с красивыми девушками - https://t.me/only_private \n\n\n\n\n\n #{" #".join(self.videos_tags)}')
 
+        action = ActionChains(self.driver)
+        action.send_keys(video_description)
+        action.perform()
+
+        # video_description_input.send_keys(video_description)
         video_playlist = self.driver.find_element_by_css_selector('[placeholder="Выберите плейлист"]')
         video_playlist.click()
         time.sleep(0.5)
@@ -142,6 +157,8 @@ class YoutubeUpload:
             except:
                 self.driver.find_elements_by_css_selector('[class="label style-scope ytcp-button"]')[-1].click()
                 pass
+
+        return True
 
 if __name__ == '__main__':
     pr = YoutubeUpload()

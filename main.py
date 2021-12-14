@@ -4,7 +4,7 @@ import os
 
 class YouTubeUploader:
     def __init__(self):
-        self.videos_directory = r'D:\git\tiktok-downloader-python-selenium\videos'
+        self.videos_directory = r'D:/git/tiktok-downloader-python-selenium/videos'
         self.videos = os.listdir(self.videos_directory)
 
     def run_apload_videos(self):

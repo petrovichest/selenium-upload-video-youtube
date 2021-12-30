@@ -1,0 +1,31 @@
+[
+  {
+    "acc_name": "marketbandet",
+    "profile_path": "C:\\Users\\kate\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 10;",
+    "category": "animals funny",
+    "tags": [
+      "animals",
+      "funny",
+      "cats",
+      "dogs"
+    ],
+    "shorts_counter": 1,
+    "longs_counter": 1,
+    "title_shorts": "Funny Animals num: {counter} | #Shorts",
+    "title_longs": "Best of Funny Animals num: {counter} | #Longs"
+  },
+  {
+    "acc_name": "JoshSpecnas",
+    "profile_path": "C:\\Users\\kate\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 13;",
+    "category": "fails",
+    "tags": [
+      "fails",
+      "funny",
+      "idiots"
+    ],
+    "shorts_counter": 1,
+    "longs_counter": 1,
+    "title_shorts": "Funny fails num: {counter} | #Shorts",
+    "title_longs": "Best of Funny fails num: {counter} | #Longs"
+  }
+]

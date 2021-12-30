@@ -1,32 +1,21 @@
 import os
-import re
 import time
-import pyperclip
-from selenium import webdriver
 from selenium.webdriver import ActionChains
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 
-from scripts.file_manager import FileManager
-from scripts.deemojify import deEmojify
-
+from uploader.file_video_manager import FileVideoManager
+from uploader.deemojify import deEmojify
+from scripts.browser_controller import BrowserController
 
 class YoutubeUpload:
 
-    def __init__(self):
-        chrome_options = Options()
-        user_path = r'C:\Users\kate\AppData\Local\Google\Chrome\User Data\YoutubeUploader'
-        user_profile = 'Profile 10'
-
-        with open('res/tags.txt', 'r', encoding='utf-8') as f:
+    def __init__(self, user_path):
+        user_path = user_path
+        with open('../res/tags.txt', 'r', encoding='utf-8') as f:
             self.videos_tags = [x.strip().replace(' ', '') for x in f.read().split('\n') if x]
-        with open('res/videos_counter.txt', 'r', encoding='utf-8') as f:
+        with open('../res/videos_counter.txt', 'r', encoding='utf-8') as f:
             self.video_number = int(f.read().strip())
-        chrome_options.add_argument(f'user-data-dir={user_path}')
-        chrome_options.add_argument(f'--profile-directory={user_profile}')
-
-        # chrome_options.add_argument("--headless")
-        self.driver = webdriver.Chrome(chrome_options=chrome_options)
+        self.driver = BrowserController(profile_name=user_path).start_browser(proxy=False, headless=False)
         self.driver.get('https://studio.youtube.com/channel/')
 
     def upload_video(self, video_data, video_path):
@@ -35,9 +24,11 @@ class YoutubeUpload:
             return False
 
         videos_data_path = video_path.replace(video_data, '').replace('/videos/', '')
-        video_description = FileManager(folder_path=videos_data_path).get_description_by_videoname(video_data)
+        video_description = FileVideoManager(folder_path=videos_data_path).get_description_by_videoname(video_data)
 
-        if not video_description:
+        if video_description == False:
+            with open('res/bl.txt', 'a', encoding='utf-8') as f:
+                f.write(f'{video_data}\n')
             return False
 
         video_description = deEmojify(video_description)
@@ -99,7 +90,10 @@ class YoutubeUpload:
         video_description_input.click()
 
         action = ActionChains(self.driver)
-        action.send_keys(video_description)
+        # action.send_keys(f'Участвуй в бесплатном розыгрыше призов -  https://clck.ru/ZPjTe \n {video_description}')
+        for one_fragment in video_description.split('|NEWROW|'):
+            action.send_keys(f'{one_fragment}')
+            action.send_keys(Keys.ENTER)
         action.perform()
 
         # video_description_input.send_keys(video_description)
@@ -124,7 +118,7 @@ class YoutubeUpload:
         done_button = self.driver.find_element_by_css_selector('[id="done-button"]')
         done_button.click()
 
-        with open('bl.txt', 'a', encoding='utf-8') as f:
+        with open('res/bl.txt', 'a', encoding='utf-8') as f:
             f.write(f'{video_data}\n')
 
         for x in range(360):
@@ -141,7 +135,7 @@ class YoutubeUpload:
                     print('Video uploaded')
                     self.driver.find_elements_by_css_selector('[class="label style-scope ytcp-button"]')[-1].click()
                     self.video_number += 1
-                    with open('res/videos_counter.txt', 'w') as f:
+                    with open('../res/videos_counter.txt', 'w') as f:
                         f.write(f'{self.video_number}')
                     return True
                 else:

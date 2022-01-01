@@ -1,31 +1,53 @@
-[
-  {
-    "acc_name": "marketbandet",
-    "profile_path": "C:\\Users\\kate\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 10;",
-    "category": "animals funny",
-    "tags": [
-      "animals",
-      "funny",
-      "cats",
-      "dogs"
-    ],
-    "shorts_counter": 1,
-    "longs_counter": 1,
-    "title_shorts": "Funny Animals num: {counter} | #Shorts",
-    "title_longs": "Best of Funny Animals num: {counter} | #Longs"
-  },
-  {
-    "acc_name": "JoshSpecnas",
-    "profile_path": "C:\\Users\\kate\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 13;",
-    "category": "fails",
-    "tags": [
-      "fails",
-      "funny",
-      "idiots"
-    ],
-    "shorts_counter": 1,
-    "longs_counter": 1,
-    "title_shorts": "Funny fails num: {counter} | #Shorts",
-    "title_longs": "Best of Funny fails num: {counter} | #Longs"
-  }
-]
+{
+    "marketbandet": {
+        "acc_name": "marketbandet",
+        "profile_path": "C:\\Users\\kate\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 10;",
+        "category": "веселые животные",
+        "tags": [
+            "animals",
+            "funny",
+            "cats",
+            "dogs",
+            "веселые",
+            "животные",
+            "коты",
+            "собаки"
+        ],
+        "short_counter": 1,
+        "long_counter": 1,
+        "title_short": "Лучшие ТикТок видео {counter} | Самые веселые TikTok видео 2022 #Shorts",
+        "title_long": "Best of Funny Animals num: {counter} | #Longs",
+        "status": true
+    },
+    "JoshSpecnas": {
+        "acc_name": "JoshSpecnas",
+        "profile_path": "C:\\Users\\kate\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 13;",
+        "category": "fails",
+        "tags": [
+            "fails",
+            "funny",
+            "idiots"
+        ],
+        "short_counter": 1,
+        "long_counter": 1,
+        "title_short": "Funny fails num: {counter} | #Shorts",
+        "title_long": "Best of Funny fails num: {counter} | #Longs",
+        "status": false
+    },
+    "123123": {
+        "acc_name": "123123",
+        "profile_path": "",
+        "category": "animals funny",
+        "tags": [
+            "animals",
+            "funny",
+            "cats",
+            "dogs"
+        ],
+        "short_counter": 3,
+        "long_counter": 1,
+        "title_short": "Funny Animals num: {counter} | #Shorts",
+        "title_long": "Best of Funny Animals num: {counter} | #Longs",
+        "status": false
+    }
+}

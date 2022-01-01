@@ -6,24 +6,28 @@ from selenium.webdriver.common.keys import Keys
 from uploader.file_video_manager import FileVideoManager
 from uploader.deemojify import deEmojify
 from scripts.browser_controller import BrowserController
+from scripts.data_controller import DataController
+
 
 class YoutubeUpload:
 
-    def __init__(self, user_path):
-        user_path = user_path
-        with open('../res/tags.txt', 'r', encoding='utf-8') as f:
-            self.videos_tags = [x.strip().replace(' ', '') for x in f.read().split('\n') if x]
-        with open('../res/videos_counter.txt', 'r', encoding='utf-8') as f:
-            self.video_number = int(f.read().strip())
+    def __init__(self, acc_data, video_type='short'):
+        self.acc_data = acc_data
+        user_path = acc_data.get('profile_path')
+        self.videos_tags = acc_data.get('tags')
+        self.category = acc_data.get('category')
+        self.video_type = video_type
+        self.video_title = acc_data.get(f'title_{video_type}')
+        self.video_number = acc_data.get(f'{video_type}_counter')
+
         self.driver = BrowserController(profile_name=user_path).start_browser(proxy=False, headless=False)
         self.driver.get('https://studio.youtube.com/channel/')
 
     def upload_video(self, video_data, video_path):
-        video_title = video_data
-        if not video_title:
+        if not video_data:
             return False
 
-        videos_data_path = video_path.replace(video_data, '').replace('/videos/', '')
+        videos_data_path = video_path.replace(video_data, '').replace(f'/{self.video_type}/{self.category}', '')
         video_description = FileVideoManager(folder_path=videos_data_path).get_description_by_videoname(video_data)
 
         if video_description == False:
@@ -61,7 +65,8 @@ class YoutubeUpload:
                 time.sleep(1)
 
         video_name_input = self.driver.find_elements_by_css_selector('[id="textbox"]')[0]
-        video_title =  f'Лучшие ТикТок видео #{self.video_number} | Самые веселые TikTok видео 2021 #Shorts'
+        # video_title =  f'Лучшие ТикТок видео #{self.video_number} | Самые веселые TikTok видео 2021 #Shorts'
+        video_title =  self.video_title.replace('{counter}', str(self.video_number))
         video_description_input = self.driver.find_elements_by_css_selector('[id="textbox"]')[1]
         for x in range(3):
             try:
@@ -83,8 +88,14 @@ class YoutubeUpload:
         time.sleep(0.5)
         video_name_input.clear()
         time.sleep(0.5)
-        video_name_input.clear()
-        video_name_input.send_keys(video_title)
+        for dfsfs in range(5):
+            video_name_input.clear()
+            video_name_input.send_keys(video_title)
+            video_name_input_text = video_name_input.text
+            if video_name_input_text == video_title:
+                break
+            else:
+                time.sleep(1)
         video_tags = ','.join(self.videos_tags)
         video_tags_input.send_keys(video_tags)
         video_description_input.click()
@@ -118,7 +129,7 @@ class YoutubeUpload:
         done_button = self.driver.find_element_by_css_selector('[id="done-button"]')
         done_button.click()
 
-        with open('res/bl.txt', 'a', encoding='utf-8') as f:
+        with open('./uploader/res/bl.txt', 'a', encoding='utf-8') as f:
             f.write(f'{video_data}\n')
 
         for x in range(360):
@@ -133,10 +144,10 @@ class YoutubeUpload:
             try:
                 if 'Видео опубликовано' in upload_progress or 'Проверка завершена' in upload_progress:
                     print('Video uploaded')
-                    self.driver.find_elements_by_css_selector('[class="label style-scope ytcp-button"]')[-1].click()
                     self.video_number += 1
-                    with open('../res/videos_counter.txt', 'w') as f:
-                        f.write(f'{self.video_number}')
+                    self.acc_data[f'{self.video_type}_counter'] = self.video_number
+                    DataController().write_acc_data(acc_data=self.acc_data)
+                    self.driver.find_elements_by_css_selector('[class="label style-scope ytcp-button"]')[-1].click()
                     return True
                 else:
                     time.sleep(1)

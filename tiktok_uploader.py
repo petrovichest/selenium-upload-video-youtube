@@ -1,9 +1,5 @@
-from uploader.main import UploaderController
+from uploader.main import YouTubeUploaderController
 
-class TikTokDownloader:
-
-    def run(self):
-        pass
 
 if __name__ == '__main__':
-    pass
+    YouTubeUploaderController().run()

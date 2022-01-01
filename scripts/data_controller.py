@@ -16,3 +16,9 @@ class DataController:
         data = self.read_accs_json()
         accs_paths = [x.get('profile_path') for x in data if x]
         return accs_paths
+
+    def write_acc_data(self, acc_data):
+        acc_file_data = self.read_accs_json()
+        acc_name = acc_data.get('acc_name')
+        acc_file_data[acc_name] = acc_data
+        self.write_accs_json(acc_file_data)

@@ -13,7 +13,7 @@ class FileVideoManager:
 
     def get_description_by_videoname(self, videoname):
         try:
-            with open(f'{self.folder_path}/res/videos_data.json', 'r', encoding='utf-8') as f:
+            with open(f'{self.folder_path}/videos_data.json', 'r', encoding='utf-8') as f:
                 data = json.load(f)
         except:
             return False

@@ -6,5 +6,7 @@ class TikTokController:
     def run(self):
         accs_data = DataController().read_accs_json()
         for one_acc in accs_data:
-            category = one_acc.get('category')
-            TikTokDownload().download_by_hashtag(category, videos_count=10)
+            acc_status = accs_data.get(one_acc).get('status')
+            if acc_status:
+                category = accs_data.get(one_acc).get('category')
+                TikTokDownload().download_by_hashtag(category, videos_count=100)

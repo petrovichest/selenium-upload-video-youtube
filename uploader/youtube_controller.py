@@ -28,10 +28,10 @@ class YoutubeUpload:
             return False
 
         videos_data_path = video_path.replace(video_data, '').replace(f'/{self.video_type}/{self.category}', '')
-        video_description = FileVideoManager(folder_path=videos_data_path).get_description_by_videoname(video_data)
+        video_description = FileVideoManager(folder_path=videos_data_path).get_description_by_videoname(video_data)[:4998]
 
         if video_description == False:
-            with open('res/bl.txt', 'a', encoding='utf-8') as f:
+            with open('./uploader/res/bl.txt', 'a', encoding='utf-8') as f:
                 f.write(f'{video_data}\n')
             return False
 
@@ -57,7 +57,7 @@ class YoutubeUpload:
         else:
             return False
         file_input_element.send_keys(f'{video_path}')
-        for x in range(15):
+        for x in range(60):
             try:
                 self.driver.find_element_by_css_selector('[id="textbox"]')
                 break
@@ -67,6 +67,7 @@ class YoutubeUpload:
         video_name_input = self.driver.find_elements_by_css_selector('[id="textbox"]')[0]
         # video_title =  f'Лучшие ТикТок видео #{self.video_number} | Самые веселые TikTok видео 2021 #Shorts'
         video_title =  self.video_title.replace('{counter}', str(self.video_number))
+
         video_description_input = self.driver.find_elements_by_css_selector('[id="textbox"]')[1]
         for x in range(3):
             try:
@@ -78,6 +79,12 @@ class YoutubeUpload:
         else:
             return False
 
+        # try:
+        #     error_message = self.driver.find_element_by_css_selector('[class="error-details style-scope ytcp-uploads-dialog"]').text
+        #     print(error_message)
+        #     return False
+        # except:
+        #     pass
         also_params = self.driver.find_element_by_css_selector('[id="toggle-button"]')
         also_params.click()
         time.sleep(1)
@@ -132,7 +139,7 @@ class YoutubeUpload:
         with open('./uploader/res/bl.txt', 'a', encoding='utf-8') as f:
             f.write(f'{video_data}\n')
 
-        for x in range(360):
+        for x in range(60*30):
             try:
                 upload_progress = self.driver.find_elements_by_css_selector('[id="dialog-title"]')[-1].text
                 if 'Обработка видео' in upload_progress:
@@ -145,9 +152,12 @@ class YoutubeUpload:
                 if 'Видео опубликовано' in upload_progress or 'Проверка завершена' in upload_progress:
                     print('Video uploaded')
                     self.video_number += 1
+                    if self.video_type == 'long':
+                        self.acc_data['long_last_update'] = int(time.time())
                     self.acc_data[f'{self.video_type}_counter'] = self.video_number
                     DataController().write_acc_data(acc_data=self.acc_data)
                     self.driver.find_elements_by_css_selector('[class="label style-scope ytcp-button"]')[-1].click()
+
                     return True
                 else:
                     time.sleep(1)

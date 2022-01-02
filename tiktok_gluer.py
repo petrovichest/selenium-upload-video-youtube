@@ -1,9 +1,5 @@
-from gluer.videos_processor import VideosProcessor
+from gluer.main import GluerController
 
-class TikTokDownloader:
-
-    def run(self):
-        pass
 
 if __name__ == '__main__':
-    pass
+    GluerController().run()

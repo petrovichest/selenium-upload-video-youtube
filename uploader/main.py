@@ -12,7 +12,6 @@ class YouTubeUploaderController:
         self.videos_main_directory = f'D:/git/selenium-upload-video-youtube/videos'
         self.videos_directory = f'{self.videos_main_directory}/{video_type}/{self.category}'
         self.videos = os.listdir(self.videos_directory)
-        videos_data_names = os.listdir(self.videos_directory)
         for video_name in self.videos:
             with open('./uploader/res/bl.txt', 'r', encoding='utf-8') as f:
                 self.bl = [x.strip() for x in f.read().split('\n') if x]
@@ -23,7 +22,7 @@ class YouTubeUploaderController:
                 except:
                     pass
                 continue
-            uploader = youtube_controller.YoutubeUpload(acc_data)
+            uploader = youtube_controller.YoutubeUpload(acc_data, video_type=video_type)
             video_path = f'{self.videos_directory}/{video_name}'
             if not uploader.upload_video(video_name, video_path):
                 continue
@@ -38,7 +37,11 @@ class YouTubeUploaderController:
             for one_acc in accs_data:
                 acc_status = accs_data.get(one_acc).get('status')
                 if acc_status:
-                    self.run_upload_videos(accs_data.get(one_acc))
+                    current_time = int(time.time())
+                    if current_time > accs_data.get(one_acc).get('long_last_update') + (3600 * 24):
+                        self.run_upload_videos(accs_data.get(one_acc), video_type='long')
+                    else:
+                        self.run_upload_videos(accs_data.get(one_acc))
             time.sleep(10*60)
 
 

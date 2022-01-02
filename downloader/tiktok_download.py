@@ -31,7 +31,7 @@ class TikTokDownload:
                         break
                 else:
                     video_bytes = api.get_video_by_tiktok(one_tiktok, custom_device_id=device_id)
-                    FileManager().save_video(video_name=one_tiktok['id'],category=hashtag, video_bytes=video_bytes)
+                    FileManager().save_video(video_name=one_tiktok['id'], category=hashtag, video_bytes=video_bytes, video_type='short')
 
                     FileManager().save_video_name_and_description(f'{one_tiktok["id"]}.mp4', description)
 

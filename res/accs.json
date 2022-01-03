@@ -13,12 +13,12 @@
             "коты",
             "собаки"
         ],
-        "short_counter": 114,
+        "short_counter": 146,
         "long_counter": 2,
         "long_last_update": 1641157436,
-        "title_short": "Лучшие ТикТок видео {counter} | Самые веселые TikTok видео 2022 #Shorts",
-        "title_long": "Лучшие ТикТок видео подборка {counter} | #Longs",
-        "status": true
+        "title_short": "Лучшие ТикТоки: {counter} | Самые веселые TikTok видео 2022 #Shorts",
+        "title_long": "Лучшие ТикТоки подборка: {counter} | #Longs",
+        "status": false
     },
     "JoshSpecnas": {
         "acc_name": "JoshSpecnas",
@@ -30,11 +30,11 @@
             "idiots"
         ],
         "short_counter": 17,
-        "long_counter": 1,
-        "long_last_update": 0,
+        "long_counter": 2,
+        "long_last_update": 1641229852,
         "title_short": "Funny fails num: {counter} | #Shorts",
         "title_long": "Best of Funny fails num: {counter} | #Longs",
-        "status": false
+        "status": true
     },
     "123123": {
         "acc_name": "123123",

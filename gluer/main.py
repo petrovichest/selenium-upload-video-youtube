@@ -9,7 +9,7 @@ class GluerController:
             acc_status = accs_data.get(one_acc).get('status')
             if acc_status:
                 category = accs_data.get(one_acc).get('category')
-                VideosProcessor(category=category).compose_videos(length=900)
+                VideosProcessor(category=category).compose_videos(length=700)
 
 
 if __name__ == '__main__':

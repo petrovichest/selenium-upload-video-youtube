@@ -22,10 +22,13 @@ class FileManager:
 
     def save_video(self, video_name, category, video_bytes, video_type):
         try:
-            os.mkdir(f'./videos/{video_type}/{category}')
+            os.mkdir(f'./videos/{video_type}/short')
         except:
             pass
-
+        try:
+            os.mkdir(f'./videos/{video_type}/long')
+        except:
+            pass
         with open(f"./videos/{video_type}/{category}/{video_name}.mp4", "wb") as out:
             out.write(video_bytes)
 

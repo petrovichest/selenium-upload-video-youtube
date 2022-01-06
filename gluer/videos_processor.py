@@ -48,6 +48,9 @@ class VideosProcessor:
             curren_length += video_length
             videos_to_concate.append(video)
             FileController().write_bl(one_video, gluer=True)
+        if not videos_to_concate:
+            print('Закончились видео для склейки')
+            return False
 
         final_clip = concatenate_videoclips(videos_to_concate)
         try:

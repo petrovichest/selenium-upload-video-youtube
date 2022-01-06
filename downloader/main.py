@@ -9,4 +9,4 @@ class TikTokController:
             acc_status = accs_data.get(one_acc).get('status')
             if acc_status:
                 category = accs_data.get(one_acc).get('category')
-                TikTokDownload().download_by_hashtag(category, videos_count=100)
+                TikTokDownload().download_by_hashtag(category, videos_count=300)

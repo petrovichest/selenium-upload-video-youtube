@@ -2,7 +2,7 @@
     "marketbandet": {
         "acc_name": "marketbandet",
         "profile_path": "C:\\Users\\kate\\AppData\\Local\\Google\\Chrome\\User Data\\Profile 10;",
-        "category": "милые животные",
+        "category": "смешные животные",
         "tags": [
             "animals",
             "funny",
@@ -13,12 +13,12 @@
             "коты",
             "собаки"
         ],
-        "short_counter": 146,
-        "long_counter": 2,
-        "long_last_update": 1641157436,
+        "short_counter": 304,
+        "long_counter": 5,
+        "long_last_update": 1641483825,
         "title_short": "Лучшие ТикТоки: {counter} | Самые веселые TikTok видео 2022 #Shorts",
         "title_long": "Лучшие ТикТоки подборка: {counter} | #Longs",
-        "status": false
+        "status": true
     },
     "JoshSpecnas": {
         "acc_name": "JoshSpecnas",
@@ -29,9 +29,9 @@
             "funny",
             "idiots"
         ],
-        "short_counter": 17,
-        "long_counter": 2,
-        "long_last_update": 1641229852,
+        "short_counter": 36,
+        "long_counter": 4,
+        "long_last_update": 1641504771,
         "title_short": "Funny fails num: {counter} | #Shorts",
         "title_long": "Best of Funny fails num: {counter} | #Longs",
         "status": true

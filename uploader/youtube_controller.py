@@ -28,7 +28,8 @@ class YoutubeUpload:
             return False
 
         videos_data_path = video_path.replace(video_data, '').replace(f'/{self.video_type}/{self.category}', '')
-        video_description = FileVideoManager(folder_path=videos_data_path).get_description_by_videoname(video_data)[:4998]
+        video_description = FileVideoManager(folder_path=videos_data_path).get_description_by_videoname(video_data)[
+                            :4998]
 
         if video_description == False:
             with open('./uploader/res/bl.txt', 'a', encoding='utf-8') as f:
@@ -39,7 +40,7 @@ class YoutubeUpload:
 
         # self.driver.get('https://studio.youtube.com/channel/')
         time.sleep(2)
-        for x in range(2):
+        for x in range(10):
             try:
                 upload_btn = self.driver.find_element_by_css_selector('[id="upload-icon"]')
                 upload_btn.click()
@@ -47,12 +48,16 @@ class YoutubeUpload:
             except:
                 # self.driver.get('https://studio.youtube.com/channel/')
                 time.sleep(1)
-        else: return False
+                self.check_dialog()
+
+        else:
+            return False
         for sdasdfs in range(10):
             try:
                 file_input_element = self.driver.find_element_by_css_selector('[name="Filedata"]')
                 break
             except:
+                self.check_dialog()
                 time.sleep(1)
         else:
             return False
@@ -62,11 +67,12 @@ class YoutubeUpload:
                 self.driver.find_element_by_css_selector('[id="textbox"]')
                 break
             except:
+                self.check_dialog()
                 time.sleep(1)
 
         video_name_input = self.driver.find_elements_by_css_selector('[id="textbox"]')[0]
         # video_title =  f'Лучшие ТикТок видео #{self.video_number} | Самые веселые TikTok видео 2021 #Shorts'
-        video_title =  self.video_title.replace('{counter}', str(self.video_number))
+        video_title = self.video_title.replace('{counter}', str(self.video_number))
 
         video_description_input = self.driver.find_elements_by_css_selector('[id="textbox"]')[1]
         for x in range(3):
@@ -75,6 +81,7 @@ class YoutubeUpload:
                 kids_radio_btn.click()
                 break
             except:
+                self.check_dialog()
                 time.sleep(1)
         else:
             return False
@@ -119,7 +126,9 @@ class YoutubeUpload:
         video_playlist.click()
         time.sleep(0.5)
         self.driver.find_element_by_css_selector('[id="checkbox-label-0"]').click()
-        self.driver.find_element_by_css_selector('[class="action-buttons style-scope ytcp-playlist-dialog"]').find_element_by_css_selector('[class="done-button action-button style-scope ytcp-playlist-dialog"]').click()
+        self.driver.find_element_by_css_selector(
+            '[class="action-buttons style-scope ytcp-playlist-dialog"]').find_element_by_css_selector(
+            '[class="done-button action-button style-scope ytcp-playlist-dialog"]').click()
         # video_tags_input.send_keys(video_tags)
 
         print(video_path)
@@ -139,14 +148,15 @@ class YoutubeUpload:
         with open('./uploader/res/bl.txt', 'a', encoding='utf-8') as f:
             f.write(f'{video_data}\n')
 
-        for x in range(60*30):
+        for x in range(60 * 30):
             try:
                 upload_progress = self.driver.find_elements_by_css_selector('[id="dialog-title"]')[-1].text
                 if 'Обработка видео' in upload_progress:
                     upload_progress = self.driver.find_elements_by_css_selector(
                         '[class="progress-label style-scope ytcp-video-upload-progress"]')[-1].text
             except:
-                upload_progress = self.driver.find_elements_by_css_selector('[class="progress-label style-scope ytcp-video-upload-progress"]')[-1].text
+                upload_progress = self.driver.find_elements_by_css_selector(
+                    '[class="progress-label style-scope ytcp-video-upload-progress"]')[-1].text
 
             try:
                 if 'Видео опубликовано' in upload_progress or 'Проверка завершена' in upload_progress:
@@ -174,6 +184,15 @@ class YoutubeUpload:
                 pass
 
         return True
+
+    def check_dialog(self):
+        try:
+            self.driver.find_element_by_css_selector('[id="confirmation-dialog"]')
+            self.driver.excetute_script(
+                """document.querySelector('[id="confirmation-dialog"]').parentNode.removeChild(document.querySelector('[id="confirmation-dialog"]'))""")
+        except:
+            pass
+
 
 if __name__ == '__main__':
     pr = YoutubeUpload()

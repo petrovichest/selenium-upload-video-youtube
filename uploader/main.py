@@ -1,10 +1,18 @@
 import time
 import os
 
+import self as self
+from loguru import logger
+
 from uploader import youtube_controller
+from uploader import youtube_api_controller
 from scripts.data_controller import DataController
 
 class YouTubeUploaderController:
+
+    def __init__(self):
+        self.uploader = youtube_api_controller.YoutubeApiController(video_type='short')
+
     def run_upload_videos(self, acc_data,  video_type='short'):
         self.acc_name = acc_data.get('acc_name')
         self.category = acc_data.get('category')
@@ -25,16 +33,18 @@ class YouTubeUploaderController:
                 except:
                     pass
                 continue
-            uploader = youtube_controller.YoutubeUpload(acc_data, video_type=video_type)
+            self.uploader.init_account_data(acc_data)
+            # uploader = youtube_controller.YoutubeUpload(acc_data, video_type=video_type)
             video_path = f'{self.videos_directory}/{video_name}'
-            if not uploader.upload_video(video_name, video_path):
+            if not self.uploader.upload_video(video_name, video_path):
                 continue
             # with open('bl.txt', 'a', encoding='utf-8') as f:
             #     f.write(f'{video_name}\n')
-            uploader.driver.close()
+            # uploader.driver.close()
             return True
 
     def run(self):
+
         while True:
             accs_data = DataController().read_accs_json()
             for one_acc in accs_data:
@@ -44,13 +54,15 @@ class YouTubeUploaderController:
                     if current_time > accs_data.get(one_acc).get('long_last_update') + (3600 * 24):
                         if not self.run_upload_videos(accs_data.get(one_acc), video_type='long'):
                             self.run_upload_videos(accs_data.get(one_acc))
-
-                    else:
-                        self.run_upload_videos(accs_data.get(one_acc))
-            time.sleep(10*60)
+                    # break
+                    # else:
+                    #     self.run_upload_videos(accs_data.get(one_acc))
+            # break
+            logger.info('На все аккаунты загружены видео, ожидаем 1 час')
+            time.sleep(60)
 
 
 if __name__ == '__main__':
     pr = YouTubeUploaderController()
-    pr.run_upload_videos()
+    pr.run()
     print('Complete')

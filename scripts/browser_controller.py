@@ -67,7 +67,7 @@ class BrowserController:
         except:
             pass
 
-        chrome_options.add_argument(f"user-data-dir={self.profile_copy_path}")  # Path to your chrome profile
+        chrome_options.add_argument(f"user-data-dir={self.profile_path}")  # Path to your chrome profile
         chrome_options.add_argument(f'--profile-directory={self.profile_name}')
         # chrome_options.add_extension(f'./res/extensions/adblock.crx')
         # chrome_options.add_argument(f'--disable-dev-shm-usage')

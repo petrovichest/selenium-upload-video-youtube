@@ -1,4 +1,6 @@
-from downloader.main import TikTokController
+# from downloader.main import TikTokController
+from bots.tiktok_downloader import TikTokDownloader
 
 if __name__ == '__main__':
-    TikTokController().run()
+    TikTokDownloader().run()
+    # TikTokController().run()

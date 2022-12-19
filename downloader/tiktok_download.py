@@ -9,8 +9,7 @@ class TikTokDownload:
     EXCEPTIONS = ['беларусь', 'бчб', 'живе', 'рб']
 
     def download_by_hashtag(self, hashtag, videos_count):
-        api = TikTokApi.get_instance(
-            custom_verifyFp='verify_kxexi3bp_0TKViOxa_wHgP_4q98_9Yh4_ZSWkpuTlhWOa')
+        api = TikTokApi()
         # api = TikTokApi.get_instance()
         device_id = api.generate_device_id()
 
@@ -18,6 +17,8 @@ class TikTokDownload:
         # hashtag_objects = api.search_for_hashtags(hashtag)
 
         tiktoks_data = SeleniumParserByRequests().parse_videos_by_search(search_text=hashtag, videos_count=videos_count)
+
+        api.hashtag.videos()
 
         for one_tiktok_data in tiktoks_data:
             for one_tiktok in one_tiktok_data:

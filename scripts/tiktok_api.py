@@ -1,16 +1,21 @@
+import time
+
 import requests
+from loguru import logger
+
 from scripts.file_manager import FileManager
 
 
 class TikTokApi:
 
-    def get_videos_by_hashtag(self, hashtag, videos_count):
+    def get_videos_by_hashtag(self, hashtag, videos_count) -> list:
         videos = []
         offset = 0
         videos_downloaded = FileManager().read_downloaded_videos()
         while True:
             if len(videos) >= videos_count:
                 break
+            logger.info(f'Получение видео по хэштегу {hashtag} с offset {offset}')
             url = f"https://www.tiktok.com/api/search/general/full/?keyword={hashtag}&offset={offset}"
 
             payload = {}
@@ -27,14 +32,18 @@ class TikTokApi:
                 'sec-fetch-site': 'same-origin',
                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 YaBrowser/22.11.3.818 Yowser/2.5 Safari/537.36'
             }
-
+            # time.sleep(5)
             response = requests.request("GET", url, headers=headers, data=payload)
 
             try:
                 response_json = response.json()
             except:
-                return False
+                return videos
 
+            resp_data = response_json.get('data')
+            if not resp_data:
+                logger.info(f'Не удалось получить данные\nСобрано видео: {len(videos)}')
+                return videos
             for one_video in response_json.get('data'):
                 one_video_data = {}
                 try:
@@ -55,7 +64,7 @@ class TikTokApi:
 
 
             offset += 12
-
+        logger.info(f'Видео по хэштегу {hashtag} получены')
         return videos
 
 if __name__ == '__main__':

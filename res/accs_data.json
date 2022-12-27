@@ -1,0 +1,58 @@
+{
+    "marketbandet": {
+        "acc_name": "marketbandet",
+        "profile_path": "C:/Users/kate/AppData/Local/Google/Chrome/User Data/Profile 25",
+        "client_id": "745464782598-s2mcfk3bmpi4o0i24mqqt4iiqr414reo.apps.googleusercontent.com",
+        "secret_id": "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",
+        "category": "funnyvideos",
+        "tags": [
+            "animals",
+            "funny",
+            "cats",
+            "dogs"
+        ],
+        "short_counter": 604,
+        "long_counter": 8,
+        "time_between_posts": 3600,
+        "last_upload_short": 1672143082,
+        "long_last_update": 1642660524,
+        "last_comment": 1672143299,
+        "time_between_comments": 1800,
+        "title_short": "Лучшие ТикТоки: {counter} | Самые веселые тикток видео 2022 #shorts",
+        "title_long": "Лучшие ТикТоки подборка: {counter} | #Longs",
+        "status": true
+    },
+    "JoshSpecnas": {
+        "acc_name": "JoshSpecnas",
+        "profile_path": "C:/Users/kate/AppData/Local/Google/Chrome/User Data/Profile 13;",
+        "category": "fails",
+        "tags": [
+            "fails",
+            "funny",
+            "idiots"
+        ],
+        "short_counter": 114,
+        "long_counter": 5,
+        "long_last_update": 1642660797,
+        "title_short": "Funny fails num: {counter} | #Shorts",
+        "title_long": "Best of Funny fails num: {counter} | #Longs",
+        "status": false
+    },
+    "123123": {
+        "acc_name": "123123",
+        "profile_path": "",
+        "category": "animals funny",
+        "tags": [
+            "animals",
+            "funny",
+            "cats",
+            "dogs"
+        ],
+        "short_counter": 3,
+        "long_counter": 1,
+        "long_last_update": 0,
+        "title_short": "Funny Animals num: {counter} | #Shorts",
+        "title_long": "Best of Funny Animals num: {counter} | #Longs",
+        "status": false
+    }
+}

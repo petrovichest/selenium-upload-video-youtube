@@ -1,5 +1,4 @@
-from uploader.main import YouTubeUploaderController
-
+from bots.youtube_uploader import YouTubeUploader
 
 if __name__ == '__main__':
-    YouTubeUploaderController().run()
+    YouTubeUploader().run()

@@ -24,10 +24,20 @@ class FileManager:
         except:
             pass
 
+        try:
+            os.mkdir('./res/start_search_querry')
+        except:
+            pass
+
+        try:
+            os.mkdir('./res/comments_base')
+        except:
+            pass
+
     def read_downloaded_videos(self):
         try:
             with open('./res/data/downloaded_videos.txt', 'r', encoding='utf-8') as f:
-                data = [x for x in f.read() if x]
+                data = [x for x in f.read().split('\n') if x]
         except:
             data = []
 
@@ -40,7 +50,7 @@ class FileManager:
     def read_published_videos(self):
         try:
             with open('./res/data/published_videos.txt', 'r', encoding='utf-8') as f:
-                data = [x for x in f.read() if x]
+                data = [x for x in f.read().split('\n') if x]
         except:
             data = []
 
@@ -52,7 +62,7 @@ class FileManager:
             f.write(f'{data}\n')
 
     def read_accs_json(self):
-        with open('./res/accs.json', 'r', encoding='utf-8') as f:
+        with open('./res/accs_data.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
         return data
 
@@ -67,7 +77,7 @@ class FileManager:
 
     def write_videos_data(self, data: dict):
         videos_data = self.read_videos_data()
-        videos_data.update(data)
+        videos_data[data['id']] = data
         with open('./res/data/videos_data.json', 'w', encoding='utf-8') as f:
             json.dump(videos_data, f, ensure_ascii=False, indent=4)
 
@@ -101,3 +111,78 @@ class FileManager:
 
         with open(f'./videos/short/{category}/{video_id}.mp4', 'wb') as f:
             f.write(video_bytes)
+
+    def delete_video(self, video_path):
+        try:
+            os.remove(video_path)
+        except:
+            pass
+
+    def copy_video_to_temp(self, video_path):
+        with open(video_path, 'rb') as f:
+            video_bytes = f.read()
+        with open('./videos/temp.mp4', 'wb') as f:
+            f.write(video_bytes)
+
+    def read_processed_videos(self):
+        try:
+            with open('./res/data/processed_videos.txt', 'r', encoding='utf-8') as f:
+                data = [x for x in f.read().split('\n') if x]
+        except:
+            data = []
+
+        return data
+
+    def write_processed_videos(self, data):
+        with open('./res/data/processed_videos.txt', 'a', encoding='utf-8') as f:
+            f.write(f'{data}\n')
+
+    def read_comments_base_personal(self, acc_login):
+        try:
+            with open(f'./res/comments_base/{acc_login}.txt', 'r', encoding='utf-8') as f:
+                data = [x for x in f.read().split('\n') if x]
+        except:
+            data = []
+
+        return data
+
+    def read_comments_base(self):
+        try:
+            with open('./res/comments_base/base.txt', 'r', encoding='utf-8') as f:
+                data = [x for x in f.read().split('\n') if x]
+        except:
+            data = []
+
+        return data
+
+    def read_start_search_querry_personal(self, acc_login):
+        try:
+            with open(f'./res/start_search_querry/{acc_login}.txt', 'r', encoding='utf-8') as f:
+                data = [x for x in f.read().split('\n') if x]
+        except:
+            data = []
+
+        return data
+
+    def read_start_search_query(self):
+        try:
+            with open('./res/start_search_querry/base.txt', 'r', encoding='utf-8') as f:
+                data = [x for x in f.read().split('\n') if x]
+        except:
+            data = []
+
+        return data
+
+    def read_comment_videos_black_list(self):
+        try:
+            with open('./res/data/comment_videos_black_list.txt', 'r', encoding='utf-8') as f:
+                data = [x for x in f.read().split('\n') if x]
+        except:
+            data = []
+
+        return data
+
+    def write_comment_videos_black_list(self, data):
+        with open('./res/data/comment_videos_black_list.txt', 'a', encoding='utf-8') as f:
+            f.write(f'{data}\n')
+

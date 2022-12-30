@@ -5,11 +5,11 @@ from loguru import logger
 
 from scripts.file_manager import FileManager
 from scripts.youtube_api import YoutubeApiController
-
+from scripts.youtube_uploader_selenium import YouTubeUploaderSelenium
 
 class YouTubeUploader:
 
-    uploaders = {}
+    uploaders = []
 
     def init_all_accs(self):
         all_accs_data = FileManager().read_accs_data()
@@ -19,15 +19,21 @@ class YouTubeUploader:
                 continue
             acc_client_id = all_accs_data.get(one_acc).get('client_id')
             acc_secret_id = all_accs_data.get(one_acc).get('secret_id')
-            self.uploaders[one_acc] = YoutubeApiController(acc_client_id, acc_secret_id)
+            secrets_file_path = f'{os.getcwd()}/{one_acc}.json'
+            oauth_path = f'{os.getcwd()}/oauth_{one_acc}.json'
+            self.uploaders.append(one_acc)
 
     def run(self):
         self.init_all_accs()
         while True:
             accs_data = FileManager().read_accs_data()
             for one_acc_login in self.uploaders:
+                accs_in_use = FileManager().read_accs_in_use()
+                if one_acc_login in accs_in_use:
+                    continue
                 one_acc_data = accs_data.get(one_acc_login)
                 acc_name = one_acc_data.get('acc_name')
+                firefox_profile_path = one_acc_data.get('firefox_path')
                 category = one_acc_data.get('category')
                 short_counter = one_acc_data.get('short_counter')
                 video_title = one_acc_data.get('title_short').replace('{counter}', str(short_counter))
@@ -38,7 +44,7 @@ class YouTubeUploader:
                 if int(time.time()) - last_upload_short < time_between_posts:
                     continue
 
-                videos_directory = f'{os.getcwd()}/videos/short/{category}'
+                videos_directory = f'{os.getcwd()}/videos/short/{category}'.replace('\\', '/')
                 uploaded_videos = FileManager().read_published_videos()
                 try:
                     available_videos = [x.split('.')[0] for x in os.listdir(videos_directory)]
@@ -55,9 +61,10 @@ class YouTubeUploader:
                     video_data['title'] = video_title
                     video_data['tags'] = video_tags
                     video_path = f'{videos_directory}/{video_name}.mp4'
-                    upload_result = self.uploaders[one_acc_login].upload_video(video_data, video_path)
-
-                    if "Quota" == upload_result:
+                    FileManager().write_accs_in_use(one_acc_login)
+                    upload_result = YouTubeUploaderSelenium(profile_path=firefox_profile_path).upload(video_path=video_path, video_data=video_data)
+                    FileManager().delete_accs_in_use(one_acc_login)
+                    if "Fatal" == upload_result:
                         one_acc_data["last_upload_short"] = int(time.time()) + 3600 * 3
                         FileManager().write_accs_data(acc_name, one_acc_data)
                         logger.info(f'Получена квота на загрузку видео, ожидаем 3 часа')

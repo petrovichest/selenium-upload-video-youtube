@@ -186,3 +186,26 @@ class FileManager:
         with open('./res/data/comment_videos_black_list.txt', 'a', encoding='utf-8') as f:
             f.write(f'{data}\n')
 
+
+    def read_accs_in_use(self):
+        try:
+            with open('./res/data/accs_in_use.txt', 'r', encoding='utf-8') as f:
+                data = [x for x in f.read().split('\n') if x]
+        except:
+            data = []
+
+        return data
+
+    def write_accs_in_use(self, acc):
+        with open('./res/data/accs_in_use.txt', 'a', encoding='utf-8') as f:
+            f.write(f'{acc}\n')
+
+    def delete_accs_in_use(self, acc):
+        accs_in_use = self.read_accs_in_use()
+        for acc_in_use in accs_in_use:
+            if acc_in_use == acc:
+                accs_in_use.remove(acc_in_use)
+
+        with open('./res/data/accs_in_use.txt', 'w', encoding='utf-8') as f:
+            accs_in_use_to_write = '\n'.join(accs_in_use)
+            f.write(accs_in_use_to_write)

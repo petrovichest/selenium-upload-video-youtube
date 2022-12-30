@@ -8,9 +8,9 @@ from youtube_upload.client import YoutubeUploader
 
 class YoutubeApiController:
 
-    def __init__(self, client_id, client_secret):
-        self.uploader = YoutubeUploader(client_id=client_id, client_secret=client_secret)
-        self.uploader.authenticate()
+    def __init__(self, client_id, client_secret, secrets_file_path, oauth_path):
+        self.uploader = YoutubeUploader(client_id=client_id, client_secret=client_secret, secrets_file_path=secrets_file_path)
+        self.uploader.authenticate(oauth_path=oauth_path)
 
     def upload_video(self, video_data, video_path):
         if not video_data:
@@ -32,6 +32,7 @@ class YoutubeApiController:
         try:
             upload_result = self.uploader.upload(video_path, options)
         except googleapiclient.errors.ResumableUploadError:
+            traceback.print_exc()
             return "Quota"
         except:
             traceback.print_exc()

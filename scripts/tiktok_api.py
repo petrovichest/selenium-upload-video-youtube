@@ -8,15 +8,15 @@ from scripts.file_manager import FileManager
 
 class TikTokApi:
 
-    def get_videos_by_hashtag(self, hashtag, videos_count) -> list:
+    def get_videos_by_search_query(self, search_query, videos_count) -> list:
         videos = []
         offset = 0
         videos_downloaded = FileManager().read_downloaded_videos()
         while True:
             if len(videos) >= videos_count:
                 break
-            logger.info(f'Получение видео по хэштегу {hashtag} с offset {offset}')
-            url = f"https://www.tiktok.com/api/search/general/full/?keyword={hashtag}&offset={offset}"
+            logger.info(f'Получение видео по хэштегу {search_query} с offset {offset}')
+            url = f"https://www.tiktok.com/api/search/general/full/?keyword={search_query}&offset={offset}"
 
             payload = {}
             headers = {
@@ -64,8 +64,8 @@ class TikTokApi:
 
 
             offset += 12
-        logger.info(f'Видео по хэштегу {hashtag} получены')
+        logger.info(f'Видео по хэштегу {search_query} получены')
         return videos
 
 if __name__ == '__main__':
-    TikTokApi().get_videos_by_hashtag('funny cats', 100)
+    TikTokApi().get_videos_by_search_query('funny cats', 100)

@@ -5,11 +5,11 @@ import time
 from loguru import logger
 
 from scripts.file_manager import FileManager
-from scripts.youtube_api import YoutubeApiController
+# from scripts.youtube_api import YoutubeApiController
 from scripts.requests_controller import RequestsController
-from scripts.browser_controller import BrowserController
+# from scripts.browser_controller import BrowserController
 from scripts.random_russian_cite import GetRandomCite
-
+from scripts.youtube_uploader_selenium import YouTubeUploaderSelenium
 
 class YouTubeCommenter:
 
@@ -20,6 +20,9 @@ class YouTubeCommenter:
             accs_data = FileManager().read_accs_data()
             time.sleep(10)
             for one_acc_login in accs_data:
+                accs_in_use = FileManager().read_accs_in_use()
+                if one_acc_login in accs_in_use:
+                    continue
                 one_acc_data = accs_data.get(one_acc_login)
                 last_comment = one_acc_data.get('last_comment')
                 time_between_comments = one_acc_data.get('time_between_comments')
@@ -32,7 +35,6 @@ class YouTubeCommenter:
                 accs_ready_to_comment.append(one_acc_login)
 
             if not accs_ready_to_comment:
-                logger.info(f'Нет аккаунтов, готовых к комментированию')
                 continue
 
             search_queries = FileManager().read_start_search_query()
@@ -49,7 +51,7 @@ class YouTubeCommenter:
 
             for one_acc_login in accs_ready_to_comment:
                 one_acc_profile = accs_data.get(one_acc_login)
-                acc_profile_path = accs_data.get(one_acc_login).get('profile_path')
+                acc_profile_path = accs_data.get(one_acc_login).get('firefox_path')
                 video_url = random.choice(videos_urls)
                 videos_urls.remove(video_url)
                 FileManager().write_comment_videos_black_list(video_url)
@@ -59,11 +61,12 @@ class YouTubeCommenter:
                 random_cite = GetRandomCite().return_cite()
                 final_comment = f'{comment}\n{random_cite}'
 
-                browser_controller = BrowserController()
-                browser_controller.start_browser(acc_profile_path)
+                FileManager().write_accs_in_use(one_acc_login)
+                browser_controller = YouTubeUploaderSelenium(acc_profile_path)
 
                 send_comment_result = browser_controller.youtube_send_comment(video_url, final_comment)
-                browser_controller.close_browser()
+                browser_controller.browser.quit()
+                FileManager().delete_accs_in_use(one_acc_login)
 
                 if not send_comment_result:
                     logger.info(f'Комментарий не отправлен. Аккаунт: {one_acc_login}')

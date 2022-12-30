@@ -21,8 +21,12 @@ class VideosProcessor:
                 downloaded_videos = FileManager().read_downloaded_videos()
 
                 videos_to_process = [x for x in available_videos if x not in uploaded_videos and x not in processed_videos and x in downloaded_videos]
+                if not videos_to_process:
+                    continue
+
                 logger.info(f'Videos to process: {len(videos_to_process)}')
                 for video_name in videos_to_process:
+
                     logger.info(f'Processing video: {videos_to_process.index(video_name) + 1} in {len(videos_to_process)} {video_name} ...')
                     video_path = f'{category_directory}/{video_name}.mp4'
                     VideoRedactor().mirror_video(video_path)

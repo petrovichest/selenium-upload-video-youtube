@@ -30,7 +30,7 @@ class TikTokDownloader:
             logger.info(f'Загружаем видео для аккаунта {one_acc}')
 
             tiktok_api = TikTokApi()
-            videos_data = tiktok_api.get_videos_by_hashtag(category, videos_count=100)
+            videos_data = tiktok_api.get_videos_by_search_query(category, videos_count=30)
 
             if not videos_data:
                 logger.info(f'Не удалось получить список видео')

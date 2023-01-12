@@ -22,14 +22,14 @@ class YouTubeUploaderSelenium:
         self.profile_path = profile_path
 
         binary_location = r'C:/Program Files/Mozilla Firefox/firefox.exe'
-        self.browser = webdriver.Firefox(firefox_profile=self.profile_path, firefox_binary=binary_location)
+        if profile_path:
+            self.browser = webdriver.Firefox(firefox_profile=self.profile_path, firefox_binary=binary_location)
+            logger.debug(f"Использую профиль {self.profile_path}")
+        if not profile_path:
+            self.browser = webdriver.Firefox(firefox_binary=binary_location)
+
         self.browser.set_window_position(4000, 200)
 
-        self.is_mac = False
-        if not any(os_name in platform.platform() for os_name in ["Windows", "Linux"]):
-            self.is_mac = True
-
-        logger.debug(f"Использую профиль {self.profile_path}")
 
     def upload(self, video_path, video_data):
         try:
@@ -50,10 +50,7 @@ class YouTubeUploaderSelenium:
                 self.hide_element()
                 input("Не удалось нажать на поле. Нажмите Enter, чтобы продолжить")
         time.sleep(Constant.USER_WAITING_TIME)
-        if self.is_mac:
-            field.send_keys(Keys.COMMAND + 'a')
-        else:
-            field.send_keys(Keys.CONTROL + 'a')
+        field.send_keys(Keys.CONTROL + 'a')
         time.sleep(Constant.USER_WAITING_TIME)
         field.send_keys(Keys.BACKSPACE)
 
@@ -64,7 +61,7 @@ class YouTubeUploaderSelenium:
             field.click()
             time.sleep(Constant.USER_WAITING_TIME)
 
-        field.send_keys(string, Keys.ENTER)
+        field.send_keys(string, Keys.ENTER*2)
 
     def __upload(self, video_path, video_data) -> str:
         self.video_path = video_path
@@ -118,7 +115,7 @@ class YouTubeUploaderSelenium:
             self.video_title))
 
         video_description = self.video_description
-        video_description = video_description.replace("\n", Keys.ENTER)
+        video_description = video_description.replace("\n", Keys.ENTER).replace('@', '')
         if video_description:
             self.__write_in_field(description_field, video_description, select_all=True)
             logger.debug('Description filled.')
@@ -220,7 +217,7 @@ class YouTubeUploaderSelenium:
         done_button.click()
         logger.debug(
             f"Publishing video {self.video_title}")
-        time.sleep(Constant.USER_WAITING_TIME)
+        time.sleep(Constant.USER_WAITING_TIME * 10)
         self.browser.get(Constant.YOUTUBE_URL)
         return 'Success'
 
@@ -248,7 +245,7 @@ class YouTubeUploaderSelenium:
             except:
                 self.browser.find_element_by_tag_name('body').send_keys(Keys.HOME)
                 for x in range(1):
-                    self.browser.find_element_by_tag_name('body').send_keys(Keys.PAGE_DOWN)
+                    self.browser.find_element_by_tag_name('body').send_keys(Keys.ARROW_DOWN * 10)
                     time.sleep(1)
 
         else:
@@ -266,6 +263,59 @@ class YouTubeUploaderSelenium:
             return False
         time.sleep(10)
         return True
+
+    def youtube_check_comment(self, video_url, text):
+        try:
+            self.browser.get(video_url)
+        except:
+            logger.info('Не удалось открыть страницу видео')
+            return False
+
+        for x in range(10):
+            try:
+                trigger = self.browser.find_element_by_css_selector('[id="trigger"]')
+                trigger.click()
+                break
+            except:
+                try:
+                    self.browser.find_element_by_tag_name('body').send_keys(Keys.HOME)
+                    for x in range(1):
+                        self.browser.find_element_by_tag_name('body').send_keys(Keys.ARROW_DOWN * 10)
+                        time.sleep(1)
+                except:
+                    pass
+                time.sleep(1)
+
+        else:
+            logger.info('Не удалось найти триггер')
+            return False
+
+        time.sleep(3)
+
+        try:
+            self.browser.find_element_by_css_selector('[class="yt-simple-endpoint style-scope yt-dropdown-menu"]').click()
+        except:
+            logger.info('Не удалось нажать на кнопку "Показать все комментарии"')
+            return False
+
+        for x in range(10):
+            comments = self.browser.find_elements_by_css_selector('[id="content-text"]')
+            if not comments:
+                time.sleep(1)
+                continue
+            for comment in comments:
+                try:
+                    comment_text = comment.text
+                except:
+                    continue
+                if text in comment_text:
+                    return True
+
+            time.sleep(1)
+        else:
+            logger.info('Не удалось найти комментарий')
+            return False
+
 
 
 class Constant:

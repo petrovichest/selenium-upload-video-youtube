@@ -1,5 +1,6 @@
 import json
 import os
+import random
 
 
 class FileManager:
@@ -198,7 +199,7 @@ class FileManager:
 
     def write_accs_in_use(self, acc):
         with open('./res/data/accs_in_use.txt', 'a', encoding='utf-8') as f:
-            f.write(f'{acc}\n')
+            f.write(f'\n{acc}\n')
 
     def delete_accs_in_use(self, acc):
         accs_in_use = self.read_accs_in_use()
@@ -209,3 +210,8 @@ class FileManager:
         with open('./res/data/accs_in_use.txt', 'w', encoding='utf-8') as f:
             accs_in_use_to_write = '\n'.join(accs_in_use)
             f.write(accs_in_use_to_write)
+
+    def get_random_kaomoji(self):
+        with open('./res/comments_base/kaomoji.txt', 'r', encoding='utf-8') as f:
+            data = [x for x in f.read().split('\n') if x]
+        return random.choice(data)

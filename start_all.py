@@ -10,7 +10,7 @@ if __name__ == '__main__':
     threads_list = [
         TikTokDownloader,
         YouTubeUploader,
-        # VideosProcessor,
+        VideosProcessor,
         YouTubeCommenter
     ]
     for thread in threads_list:

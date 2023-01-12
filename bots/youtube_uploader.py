@@ -52,8 +52,12 @@ class YouTubeUploader:
                     time.sleep(10)
                     continue
 
+                processed_videos = FileManager().read_processed_videos()
+
                 for video_name in available_videos:
                     if video_name in uploaded_videos:
+                        continue
+                    if video_name not in processed_videos:
                         continue
                     video_data = {}
                     video_data_raw = FileManager().get_video_data(video_name)

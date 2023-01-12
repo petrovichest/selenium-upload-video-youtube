@@ -12,13 +12,17 @@ from selenium.webdriver.chrome.options import Options
 
 class BrowserController:
 
-    def start_browser(self, profile_path):
+    def start_browser(self, profile_path=None):
         options = webdriver.ChromeOptions()
-        profile_dir = profile_path.split('/')[-1]
-        profile_path_without_dir = '/'.join(profile_path.split('/')[:-1])
-        options.add_argument(f"user-data-dir={profile_path_without_dir}")  # Path to your chrome profile
-        options.add_argument(f"--profile-directory={profile_dir}")
+        if profile_path:
+            profile_dir = profile_path.split('/')[-1]
+            profile_path_without_dir = '/'.join(profile_path.split('/')[:-1])
+            options.add_argument(f"user-data-dir={profile_path_without_dir}")  # Path to your chrome profile
+            options.add_argument(f"--profile-directory={profile_dir}")
         self.driver = webdriver.Chrome(chrome_options=options)
+
+    def start_firefox(self):
+        self.driver = webdriver.Firefox()
 
     def youtube_send_comment(self, video_url, comment_text):
         try:
@@ -53,6 +57,52 @@ class BrowserController:
             return False
         time.sleep(10)
         return True
+
+    def youtube_check_comment(self, video_url, comment_text):
+        try:
+            self.driver.get(video_url)
+        except:
+            logger.info('Не удалось открыть страницу видео')
+            return False
+
+        for x in range(10):
+            try:
+                trigger = self.driver.find_element_by_css_selector('[id="trigger"]')
+                break
+            except:
+                time.sleep(1)
+
+        else:
+            logger.info('Не удалось найти триггер')
+            return False
+
+        try:
+            trigger.click()
+        except:
+            logger.info('Не удалось нажать на триггер')
+            return False
+
+        time.sleep(3)
+
+        try:
+            self.driver.find_element_by_css_selector('[class="yt-simple-endpoint style-scope yt-dropdown-menu"]').click()
+        except:
+            logger.info('Не удалось нажать на кнопку "Показать все комментарии"')
+            return False
+
+        for x in range(10):
+            comments = self.driver.find_elements_by_css_selector('[id="content-text"]')
+            if not comments:
+                time.sleep(1)
+                continue
+            comments_text = [comment.text for comment in comments]
+            if comment_text in comments_text:
+                    return True
+            time.sleep(1)
+        else:
+            logger.info('Не удалось найти комментарий')
+            return False
+
 
     def close_browser(self):
         self.driver.close()

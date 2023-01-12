@@ -7,7 +7,7 @@ from loguru import logger
 from scripts.file_manager import FileManager
 # from scripts.youtube_api import YoutubeApiController
 from scripts.requests_controller import RequestsController
-# from scripts.browser_controller import BrowserController
+from scripts.browser_controller import BrowserController
 from scripts.random_russian_cite import GetRandomCite
 from scripts.youtube_uploader_selenium import YouTubeUploaderSelenium
 
@@ -59,7 +59,8 @@ class YouTubeCommenter:
                 comments_base = FileManager().read_comments_base()
                 comment = random.choice(comments_base)
                 random_cite = GetRandomCite().return_cite()
-                final_comment = f'{comment}\n{random_cite}'
+                random_kaomoji = FileManager().get_random_kaomoji()
+                final_comment = f'{random_cite}\n{comment} {random_kaomoji}'
 
                 FileManager().write_accs_in_use(one_acc_login)
                 browser_controller = YouTubeUploaderSelenium(acc_profile_path)
@@ -72,8 +73,17 @@ class YouTubeCommenter:
                     logger.info(f'Комментарий не отправлен. Аккаунт: {one_acc_login}')
                     continue
 
-                one_acc_profile['last_comment'] = int(time.time())
-                FileManager().write_accs_data(one_acc_login, one_acc_profile)
-                logger.info(f'Комментарий отправлен на аккаунте {one_acc_login} на видео {video_url}')
+                brc = YouTubeUploaderSelenium()
+                check_comment_result = brc.youtube_check_comment(video_url, final_comment)
+                brc.browser.quit()
+
+                if check_comment_result:
+                    one_acc_profile['last_comment'] = int(time.time())
+                    FileManager().write_accs_data(one_acc_login, one_acc_profile)
+                    logger.info(f'Комментарий отправлен на аккаунте {one_acc_login} на видео {video_url}')
+                else:
+                    one_acc_profile['last_comment'] = int(time.time()) + 3600 * 5
+                    FileManager().write_accs_data(one_acc_login, one_acc_profile)
+                    logger.info(f'Комментарий не отправлен. Аккаунт: {one_acc_login}')
 
 
